@@ -341,6 +341,7 @@ void A_1_5_4(void)
 void A_1_5_5(void)
 {
   // IHR_CODE_HIER ...
+  const int wait = 1;
   
   // 8-Bit-Variable für den Zähler
   uint8_t Cnt = 0;
@@ -359,13 +360,13 @@ void A_1_5_5(void)
 	  switch (State)
 	  {
 		  case 0:
-				if (PINB & (3 << 6)) // Beide Tasten gedrückt aus State nichts
+				if (PINB & (1 << 6) && PINB & (1 << 7)) // Beide Tasten gedrückt aus State nichts
 				{
 					State = 3;
 			  
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
-				else if (PINB & (1 << 6)) // Taste-Down gedrückt aus State nichts
+				else if (PINB & (1 << 6) && !(PINB & (1 << 7))) // Taste-Down gedrückt aus State nichts
 				{
 					if(Cnt > 0){
 						Cnt--;
@@ -375,9 +376,9 @@ void A_1_5_5(void)
 
 					PORTC = ~Cnt;
 					
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
-				else if (PINB & (1 << 7)) // Taste-Up gedrückt aus State nichts
+				else if (PINB & (1 << 7) && !(PINB & (1 << 6))) // Taste-Up gedrückt aus State nichts
 				{
 					if(Cnt < 255){
 						Cnt++;
@@ -387,67 +388,67 @@ void A_1_5_5(void)
 
 					PORTC = ~Cnt;
 					
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
 				break;
 		  case 1:
-				if (!(PINB & (3 << 7)))
+				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))
 				{
 					State = 0;
 
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
-				else if (PINB & (3 << 6))
+				else if (PINB & (1 << 6) && PINB & (1 << 7))
 				{
 					State = 3;
 
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
-				else if (PINB & (1 << 6))
+				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))
 				{
 					State = 2;
 
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
 				break;
 		case 2:
-				if (!(PINB & (3 << 7)))
+				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))
 				{
 					State = 0;
 
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
-				else if (PINB & (3 << 6))
+				else if (PINB & (1 << 6) && PINB & (1 << 7))
 				{
 					State = 3;
 
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
-				else if (PINB & (1 << 7))
+				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))
 				{
 					State = 1;
 
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
 				break;
 		case 3:
-				if (!(PINB & (3 << 7)))
+				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))
 				{
 					State = 0;
 
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
-				else if (PINB & (1 << 6))
+				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))
 				{
 					State = 2;
 
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
-				else if (PINB & (1 << 7))
+				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))
 				{
 					State = 1;
 
-					A_1_5_Wait_x_ms(50);
+					A_1_5_Wait_x_ms(wait);
 				}
 				break;
 		  
