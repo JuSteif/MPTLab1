@@ -359,16 +359,10 @@ void A_1_5_5(void)
 	  switch (State)
 	  {
 		  case 0:
-				if (PINB & (1 << 7)) // Taste-Up gedrückt aus State nichts
+				if (PINB & (3 << 6)) // Beide Tasten gedrückt aus State nichts
 				{
-					if(Cnt < 255){
-						Cnt++;
-					}
-
-					State = 1;
-
-					PORTC = ~Cnt;
-					
+					State = 3;
+			  
 					A_1_5_Wait_x_ms(50);
 				}
 				else if (PINB & (1 << 6)) // Taste-Down gedrückt aus State nichts
@@ -383,9 +377,16 @@ void A_1_5_5(void)
 					
 					A_1_5_Wait_x_ms(50);
 				}
-				else if (PINB & (3 << 6)) // Beide Tasten gedrückt aus State nichts
+				else if (PINB & (1 << 7)) // Taste-Up gedrückt aus State nichts
 				{
-					State = 3;
+					if(Cnt < 255){
+						Cnt++;
+					}
+
+					State = 1;
+
+					PORTC = ~Cnt;
+					
 					A_1_5_Wait_x_ms(50);
 				}
 				break;
@@ -396,21 +397,15 @@ void A_1_5_5(void)
 
 					A_1_5_Wait_x_ms(50);
 				}
-				else if (PINB & (1 << 6))
-				{
-					if(Cnt > 0){
-						Cnt--;
-					}
-					
-					State = 2;
-					
-					PORTC = ~Cnt;
-
-					A_1_5_Wait_x_ms(50);
-				}
 				else if (PINB & (3 << 6))
 				{
 					State = 3;
+
+					A_1_5_Wait_x_ms(50);
+				}
+				else if (PINB & (1 << 6))
+				{
+					State = 2;
 
 					A_1_5_Wait_x_ms(50);
 				}
@@ -422,21 +417,15 @@ void A_1_5_5(void)
 
 					A_1_5_Wait_x_ms(50);
 				}
-				else if (PINB & (1 << 7))
-				{
-					if(Cnt < 255){
-						Cnt++;
-					}
-					
-					State = 1;
-					
-					PORTC = ~Cnt;
-
-					A_1_5_Wait_x_ms(50);
-				}
 				else if (PINB & (3 << 6))
 				{
 					State = 3;
+
+					A_1_5_Wait_x_ms(50);
+				}
+				else if (PINB & (1 << 7))
+				{
+					State = 1;
 
 					A_1_5_Wait_x_ms(50);
 				}
@@ -450,25 +439,13 @@ void A_1_5_5(void)
 				}
 				else if (PINB & (1 << 6))
 				{
-					if(Cnt > 0){
-						Cnt--;
-					}
-					
 					State = 2;
-					
-					PORTC = ~Cnt;
 
 					A_1_5_Wait_x_ms(50);
 				}
 				else if (PINB & (1 << 7))
 				{
-					if(Cnt < 255){
-						Cnt++;
-					}
-					
 					State = 1;
-					
-					PORTC = ~Cnt;
 
 					A_1_5_Wait_x_ms(50);
 				}
@@ -476,12 +453,14 @@ void A_1_5_5(void)
 		  
 		  // Default: Wenn ((State != 0) && (State != 1)) => Fehler: Fall darf bei korrektem Programm nicht auftreten.
 		  default:
-			break;
+				break;
 	  }
   }
 }	
 
 //##############################################################################
+
+
 
 #endif /* ENABLE_A_1_5 */
 #endif /* ENABLE_A_1 */
