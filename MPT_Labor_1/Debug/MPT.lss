@@ -3,31 +3,31 @@ MPT.elf:     file format elf32-avr
 
 Sections:
 Idx Name          Size      VMA       LMA       File off  Algn
-  0 .text         000003a4  00000000  00000000  00000054  2**1
+  0 .text         00000362  00000000  00000000  00000054  2**1
                   CONTENTS, ALLOC, LOAD, READONLY, CODE
-  1 .data         00000000  00800060  00800060  000003f8  2**0
+  1 .data         00000000  00800060  00800060  000003b6  2**0
                   CONTENTS, ALLOC, LOAD, DATA
-  2 .comment      00000030  00000000  00000000  000003f8  2**0
+  2 .comment      00000030  00000000  00000000  000003b6  2**0
                   CONTENTS, READONLY
-  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  00000428  2**2
+  3 .note.gnu.avr.deviceinfo 0000003c  00000000  00000000  000003e8  2**2
                   CONTENTS, READONLY
-  4 .debug_aranges 00000068  00000000  00000000  00000464  2**0
+  4 .debug_aranges 00000068  00000000  00000000  00000424  2**0
                   CONTENTS, READONLY, DEBUGGING
-  5 .debug_info   0000027b  00000000  00000000  000004cc  2**0
+  5 .debug_info   0000027b  00000000  00000000  0000048c  2**0
                   CONTENTS, READONLY, DEBUGGING
-  6 .debug_abbrev 00000114  00000000  00000000  00000747  2**0
+  6 .debug_abbrev 00000114  00000000  00000000  00000707  2**0
                   CONTENTS, READONLY, DEBUGGING
-  7 .debug_line   000008f8  00000000  00000000  0000085b  2**0
+  7 .debug_line   0000088e  00000000  00000000  0000081b  2**0
                   CONTENTS, READONLY, DEBUGGING
-  8 .debug_frame  00000108  00000000  00000000  00001154  2**2
+  8 .debug_frame  00000108  00000000  00000000  000010ac  2**2
                   CONTENTS, READONLY, DEBUGGING
-  9 .debug_str    00005f2e  00000000  00000000  0000125c  2**0
+  9 .debug_str    00005f2e  00000000  00000000  000011b4  2**0
                   CONTENTS, READONLY, DEBUGGING
- 10 .debug_loc    000001ea  00000000  00000000  0000718a  2**0
+ 10 .debug_loc    000001ea  00000000  00000000  000070e2  2**0
                   CONTENTS, READONLY, DEBUGGING
- 11 .debug_ranges 00000048  00000000  00000000  00007374  2**0
+ 11 .debug_ranges 00000048  00000000  00000000  000072cc  2**0
                   CONTENTS, READONLY, DEBUGGING
- 12 .debug_macro  0000019c  00000000  00000000  000073bc  2**0
+ 12 .debug_macro  0000019c  00000000  00000000  00007314  2**0
                   CONTENTS, READONLY, DEBUGGING
 
 Disassembly of section .text:
@@ -83,8 +83,8 @@ Disassembly of section .text:
   5a:	d8 e0       	ldi	r29, 0x08	; 8
   5c:	de bf       	out	0x3e, r29	; 62
   5e:	cd bf       	out	0x3d, r28	; 61
-  60:	99 d1       	rcall	.+818    	; 0x394 <main>
-  62:	9e c1       	rjmp	.+828    	; 0x3a0 <_exit>
+  60:	78 d1       	rcall	.+752    	; 0x352 <main>
+  62:	7d c1       	rjmp	.+762    	; 0x35e <_exit>
 
 00000064 <__bad_interrupt>:
   64:	cd cf       	rjmp	.-102    	; 0x0 <__vectors>
@@ -166,90 +166,86 @@ void A_1_5_5(void)
   dc:	00 d0       	rcall	.+0      	; 0xde <A_1_5_5+0x8>
   de:	cd b7       	in	r28, 0x3d	; 61
   e0:	de b7       	in	r29, 0x3e	; 62
-  // IHR_CODE_HIER ...
-  const int wait = 1;
+	// IHR_CODE_HIER ...
+	const int wait = 1;													// Konstante für Wartezeit 50ms, um Prellen zu vermeiden
   e2:	81 e0       	ldi	r24, 0x01	; 1
   e4:	90 e0       	ldi	r25, 0x00	; 0
   e6:	9c 83       	std	Y+4, r25	; 0x04
   e8:	8b 83       	std	Y+3, r24	; 0x03
-  
-  // 8-Bit-Variable für den Zähler
-  uint8_t Cnt = 0;
+	
+	uint8_t Cnt = 0;													// 8-Bit-Variable für den Zähler
   ea:	19 82       	std	Y+1, r1	; 0x01
-  // Zustandsvariable: 0 = Nichts gedrückt, 1 = Taste-Up, 2 = Taste-Down, 3 = Taste-Up-and-Down 
-  uint8_t State = 0;
+	uint8_t State = 0;													// Zustandsvariable: 0 = Nichts gedrückt, 1 = Taste-Up, 2 = Taste-Down, 3 = Taste-Up-and-Down
   ec:	1a 82       	std	Y+2, r1	; 0x02
-  
-  // Richtungsbits
-  DDRC = 0b11111111;
+	
+	DDRC = 0b11111111;													// Richtungsbits setezen PC = Ausgang
   ee:	84 e3       	ldi	r24, 0x34	; 52
   f0:	90 e0       	ldi	r25, 0x00	; 0
   f2:	2f ef       	ldi	r18, 0xFF	; 255
   f4:	fc 01       	movw	r30, r24
   f6:	20 83       	st	Z, r18
-  DDRB = 0b00000000;
+	DDRB = 0b00000000;													// Richtungsbits setezen PB = Eingang
   f8:	87 e3       	ldi	r24, 0x37	; 55
   fa:	90 e0       	ldi	r25, 0x00	; 0
   fc:	fc 01       	movw	r30, r24
   fe:	10 82       	st	Z, r1
 
-  //LED´s auf 0 setzen
-  PORTC = ~Cnt;
+	PORTC = ~Cnt;														//LED´s auf 0 setzen
  100:	85 e3       	ldi	r24, 0x35	; 53
  102:	90 e0       	ldi	r25, 0x00	; 0
  104:	29 81       	ldd	r18, Y+1	; 0x01
  106:	20 95       	com	r18
  108:	fc 01       	movw	r30, r24
  10a:	20 83       	st	Z, r18
-  
-  while (1)
-  {
-	  switch (State)
+	
+	while (1)
+	{
+		switch (State)
  10c:	8a 81       	ldd	r24, Y+2	; 0x02
  10e:	88 2f       	mov	r24, r24
  110:	90 e0       	ldi	r25, 0x00	; 0
  112:	81 30       	cpi	r24, 0x01	; 1
  114:	91 05       	cpc	r25, r1
  116:	09 f4       	brne	.+2      	; 0x11a <A_1_5_5+0x44>
- 118:	6b c0       	rjmp	.+214    	; 0x1f0 <A_1_5_5+0x11a>
+ 118:	62 c0       	rjmp	.+196    	; 0x1de <A_1_5_5+0x108>
  11a:	82 30       	cpi	r24, 0x02	; 2
  11c:	91 05       	cpc	r25, r1
  11e:	1c f4       	brge	.+6      	; 0x126 <A_1_5_5+0x50>
  120:	89 2b       	or	r24, r25
  122:	49 f0       	breq	.+18     	; 0x136 <A_1_5_5+0x60>
+				{
+					State = 1;											// State 1 setzen, da State 1 = Up-Taste gedrückt
 				}
 				break;
-		  
-		  // Default: Wenn ((State != 0) && (State != 1)) => Fehler: Fall darf bei korrektem Programm nicht auftreten.
-		  default:
-				break;
- 124:	36 c1       	rjmp	.+620    	; 0x392 <A_1_5_5+0x2bc>
-  //LED´s auf 0 setzen
-  PORTC = ~Cnt;
-  
-  while (1)
-  {
-	  switch (State)
+			default:
+				break;													// Default: Wenn State == 1|2|3|4 => Fehler: Fall darf bei korrektem Programm nicht auftreten.
+ 124:	12 c1       	rjmp	.+548    	; 0x34a <A_1_5_5+0x274>
+
+	PORTC = ~Cnt;														//LED´s auf 0 setzen
+	
+	while (1)
+	{
+		switch (State)
  126:	82 30       	cpi	r24, 0x02	; 2
  128:	91 05       	cpc	r25, r1
  12a:	09 f4       	brne	.+2      	; 0x12e <A_1_5_5+0x58>
- 12c:	a5 c0       	rjmp	.+330    	; 0x278 <A_1_5_5+0x1a2>
+ 12c:	93 c0       	rjmp	.+294    	; 0x254 <A_1_5_5+0x17e>
  12e:	03 97       	sbiw	r24, 0x03	; 3
  130:	09 f4       	brne	.+2      	; 0x134 <A_1_5_5+0x5e>
- 132:	e6 c0       	rjmp	.+460    	; 0x300 <A_1_5_5+0x22a>
+ 132:	cb c0       	rjmp	.+406    	; 0x2ca <A_1_5_5+0x1f4>
+				{
+					State = 1;											// State 1 setzen, da State 1 = Up-Taste gedrückt
 				}
 				break;
-		  
-		  // Default: Wenn ((State != 0) && (State != 1)) => Fehler: Fall darf bei korrektem Programm nicht auftreten.
-		  default:
-				break;
- 134:	2e c1       	rjmp	.+604    	; 0x392 <A_1_5_5+0x2bc>
-  while (1)
-  {
-	  switch (State)
-	  {
-		  case 0:
-				if (PINB & (1 << 6) && PINB & (1 << 7)) // Beide Tasten gedrückt aus State nichts
+			default:
+				break;													// Default: Wenn State == 1|2|3|4 => Fehler: Fall darf bei korrektem Programm nicht auftreten.
+ 134:	0a c1       	rjmp	.+532    	; 0x34a <A_1_5_5+0x274>
+	while (1)
+	{
+		switch (State)
+		{
+			case 0:
+				if (PINB & (1 << 6) && PINB & (1 << 7))					// Beide Tasten gedrückt aus State nichts Gedrückt
  136:	86 e3       	ldi	r24, 0x36	; 54
  138:	90 e0       	ldi	r25, 0x00	; 0
  13a:	fc 01       	movw	r30, r24
@@ -259,449 +255,392 @@ void A_1_5_5(void)
  142:	80 74       	andi	r24, 0x40	; 64
  144:	99 27       	eor	r25, r25
  146:	89 2b       	or	r24, r25
- 148:	61 f0       	breq	.+24     	; 0x162 <A_1_5_5+0x8c>
+ 148:	49 f0       	breq	.+18     	; 0x15c <A_1_5_5+0x86>
  14a:	86 e3       	ldi	r24, 0x36	; 54
  14c:	90 e0       	ldi	r25, 0x00	; 0
  14e:	fc 01       	movw	r30, r24
  150:	80 81       	ld	r24, Z
  152:	88 23       	and	r24, r24
- 154:	34 f4       	brge	.+12     	; 0x162 <A_1_5_5+0x8c>
+ 154:	1c f4       	brge	.+6      	; 0x15c <A_1_5_5+0x86>
 				{
-					State = 3;
+					State = 3;											// State 3 setzen, da State 3 = Beide Tasten gedrückt
  156:	83 e0       	ldi	r24, 0x03	; 3
  158:	8a 83       	std	Y+2, r24	; 0x02
-			  
-					A_1_5_Wait_x_ms(wait);
- 15a:	8b 81       	ldd	r24, Y+3	; 0x03
- 15c:	9c 81       	ldd	r25, Y+4	; 0x04
- 15e:	83 df       	rcall	.-250    	; 0x66 <A_1_5_Wait_x_ms>
- 160:	46 c0       	rjmp	.+140    	; 0x1ee <A_1_5_5+0x118>
+ 15a:	40 c0       	rjmp	.+128    	; 0x1dc <A_1_5_5+0x106>
 				}
-				else if (PINB & (1 << 6) && !(PINB & (1 << 7))) // Taste-Down gedrückt aus State nichts
- 162:	86 e3       	ldi	r24, 0x36	; 54
- 164:	90 e0       	ldi	r25, 0x00	; 0
- 166:	fc 01       	movw	r30, r24
- 168:	80 81       	ld	r24, Z
- 16a:	88 2f       	mov	r24, r24
- 16c:	90 e0       	ldi	r25, 0x00	; 0
- 16e:	80 74       	andi	r24, 0x40	; 64
- 170:	99 27       	eor	r25, r25
- 172:	89 2b       	or	r24, r25
- 174:	c1 f0       	breq	.+48     	; 0x1a6 <A_1_5_5+0xd0>
- 176:	86 e3       	ldi	r24, 0x36	; 54
- 178:	90 e0       	ldi	r25, 0x00	; 0
- 17a:	fc 01       	movw	r30, r24
- 17c:	80 81       	ld	r24, Z
+				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))			// Taste-Down gedrückt aus State nichts Gedrückt
+ 15c:	86 e3       	ldi	r24, 0x36	; 54
+ 15e:	90 e0       	ldi	r25, 0x00	; 0
+ 160:	fc 01       	movw	r30, r24
+ 162:	80 81       	ld	r24, Z
+ 164:	88 2f       	mov	r24, r24
+ 166:	90 e0       	ldi	r25, 0x00	; 0
+ 168:	80 74       	andi	r24, 0x40	; 64
+ 16a:	99 27       	eor	r25, r25
+ 16c:	89 2b       	or	r24, r25
+ 16e:	a9 f0       	breq	.+42     	; 0x19a <A_1_5_5+0xc4>
+ 170:	86 e3       	ldi	r24, 0x36	; 54
+ 172:	90 e0       	ldi	r25, 0x00	; 0
+ 174:	fc 01       	movw	r30, r24
+ 176:	80 81       	ld	r24, Z
+ 178:	88 23       	and	r24, r24
+ 17a:	7c f0       	brlt	.+30     	; 0x19a <A_1_5_5+0xc4>
+				{
+					if(Cnt > 0){										// Untere Grenze des Zählers festlegen = 0
+ 17c:	89 81       	ldd	r24, Y+1	; 0x01
  17e:	88 23       	and	r24, r24
- 180:	94 f0       	brlt	.+36     	; 0x1a6 <A_1_5_5+0xd0>
-				{
-					if(Cnt > 0){
+ 180:	19 f0       	breq	.+6      	; 0x188 <A_1_5_5+0xb2>
+						Cnt--;											// Zähler dekrementieren
  182:	89 81       	ldd	r24, Y+1	; 0x01
- 184:	88 23       	and	r24, r24
- 186:	19 f0       	breq	.+6      	; 0x18e <A_1_5_5+0xb8>
-						Cnt--;
- 188:	89 81       	ldd	r24, Y+1	; 0x01
- 18a:	81 50       	subi	r24, 0x01	; 1
- 18c:	89 83       	std	Y+1, r24	; 0x01
+ 184:	81 50       	subi	r24, 0x01	; 1
+ 186:	89 83       	std	Y+1, r24	; 0x01
 					}
 
-					State = 2;
- 18e:	82 e0       	ldi	r24, 0x02	; 2
- 190:	8a 83       	std	Y+2, r24	; 0x02
+					State = 2;											// State 2 setzen, da State 2 = Down-Taste gedrückt
+ 188:	82 e0       	ldi	r24, 0x02	; 2
+ 18a:	8a 83       	std	Y+2, r24	; 0x02
 
-					PORTC = ~Cnt;
- 192:	85 e3       	ldi	r24, 0x35	; 53
- 194:	90 e0       	ldi	r25, 0x00	; 0
- 196:	29 81       	ldd	r18, Y+1	; 0x01
- 198:	20 95       	com	r18
- 19a:	fc 01       	movw	r30, r24
- 19c:	20 83       	st	Z, r18
-					
-					A_1_5_Wait_x_ms(wait);
- 19e:	8b 81       	ldd	r24, Y+3	; 0x03
- 1a0:	9c 81       	ldd	r25, Y+4	; 0x04
- 1a2:	61 df       	rcall	.-318    	; 0x66 <A_1_5_Wait_x_ms>
- 1a4:	24 c0       	rjmp	.+72     	; 0x1ee <A_1_5_5+0x118>
+					PORTC = ~Cnt;										// LED´s updaten
+ 18c:	85 e3       	ldi	r24, 0x35	; 53
+ 18e:	90 e0       	ldi	r25, 0x00	; 0
+ 190:	29 81       	ldd	r18, Y+1	; 0x01
+ 192:	20 95       	com	r18
+ 194:	fc 01       	movw	r30, r24
+ 196:	20 83       	st	Z, r18
+ 198:	21 c0       	rjmp	.+66     	; 0x1dc <A_1_5_5+0x106>
+				}	
+				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))			// Taste-Up gedrückt aus State nichts Gedrückt
+ 19a:	86 e3       	ldi	r24, 0x36	; 54
+ 19c:	90 e0       	ldi	r25, 0x00	; 0
+ 19e:	fc 01       	movw	r30, r24
+ 1a0:	80 81       	ld	r24, Z
+ 1a2:	88 23       	and	r24, r24
+ 1a4:	0c f0       	brlt	.+2      	; 0x1a8 <A_1_5_5+0xd2>
+ 1a6:	ca c0       	rjmp	.+404    	; 0x33c <A_1_5_5+0x266>
+ 1a8:	86 e3       	ldi	r24, 0x36	; 54
+ 1aa:	90 e0       	ldi	r25, 0x00	; 0
+ 1ac:	fc 01       	movw	r30, r24
+ 1ae:	80 81       	ld	r24, Z
+ 1b0:	88 2f       	mov	r24, r24
+ 1b2:	90 e0       	ldi	r25, 0x00	; 0
+ 1b4:	80 74       	andi	r24, 0x40	; 64
+ 1b6:	99 27       	eor	r25, r25
+ 1b8:	89 2b       	or	r24, r25
+ 1ba:	09 f0       	breq	.+2      	; 0x1be <A_1_5_5+0xe8>
+ 1bc:	bf c0       	rjmp	.+382    	; 0x33c <A_1_5_5+0x266>
+				{	
+					if(Cnt < 255){										// Obere Grenze des Zählers festlegen = 255
+ 1be:	89 81       	ldd	r24, Y+1	; 0x01
+ 1c0:	8f 3f       	cpi	r24, 0xFF	; 255
+ 1c2:	19 f0       	breq	.+6      	; 0x1ca <A_1_5_5+0xf4>
+						Cnt++;											// Zähler inkrementieren
+ 1c4:	89 81       	ldd	r24, Y+1	; 0x01
+ 1c6:	8f 5f       	subi	r24, 0xFF	; 255
+ 1c8:	89 83       	std	Y+1, r24	; 0x01
+					}
+
+					State = 1;											// State 1 setzen, da State 1 = Up-Taste gedrückt
+ 1ca:	81 e0       	ldi	r24, 0x01	; 1
+ 1cc:	8a 83       	std	Y+2, r24	; 0x02
+
+					PORTC = ~Cnt;										// LED´s updaten
+ 1ce:	85 e3       	ldi	r24, 0x35	; 53
+ 1d0:	90 e0       	ldi	r25, 0x00	; 0
+ 1d2:	29 81       	ldd	r18, Y+1	; 0x01
+ 1d4:	20 95       	com	r18
+ 1d6:	fc 01       	movw	r30, r24
+ 1d8:	20 83       	st	Z, r18
 				}
-				else if (PINB & (1 << 7) && !(PINB & (1 << 6))) // Taste-Up gedrückt aus State nichts
- 1a6:	86 e3       	ldi	r24, 0x36	; 54
- 1a8:	90 e0       	ldi	r25, 0x00	; 0
- 1aa:	fc 01       	movw	r30, r24
- 1ac:	80 81       	ld	r24, Z
- 1ae:	88 23       	and	r24, r24
- 1b0:	0c f0       	brlt	.+2      	; 0x1b4 <A_1_5_5+0xde>
- 1b2:	e8 c0       	rjmp	.+464    	; 0x384 <A_1_5_5+0x2ae>
- 1b4:	86 e3       	ldi	r24, 0x36	; 54
- 1b6:	90 e0       	ldi	r25, 0x00	; 0
- 1b8:	fc 01       	movw	r30, r24
- 1ba:	80 81       	ld	r24, Z
- 1bc:	88 2f       	mov	r24, r24
- 1be:	90 e0       	ldi	r25, 0x00	; 0
- 1c0:	80 74       	andi	r24, 0x40	; 64
- 1c2:	99 27       	eor	r25, r25
- 1c4:	89 2b       	or	r24, r25
- 1c6:	09 f0       	breq	.+2      	; 0x1ca <A_1_5_5+0xf4>
- 1c8:	dd c0       	rjmp	.+442    	; 0x384 <A_1_5_5+0x2ae>
-				{
-					if(Cnt < 255){
- 1ca:	89 81       	ldd	r24, Y+1	; 0x01
- 1cc:	8f 3f       	cpi	r24, 0xFF	; 255
- 1ce:	19 f0       	breq	.+6      	; 0x1d6 <A_1_5_5+0x100>
-						Cnt++;
- 1d0:	89 81       	ldd	r24, Y+1	; 0x01
- 1d2:	8f 5f       	subi	r24, 0xFF	; 255
- 1d4:	89 83       	std	Y+1, r24	; 0x01
-					}
-
-					State = 1;
- 1d6:	81 e0       	ldi	r24, 0x01	; 1
- 1d8:	8a 83       	std	Y+2, r24	; 0x02
-
-					PORTC = ~Cnt;
- 1da:	85 e3       	ldi	r24, 0x35	; 53
- 1dc:	90 e0       	ldi	r25, 0x00	; 0
- 1de:	29 81       	ldd	r18, Y+1	; 0x01
- 1e0:	20 95       	com	r18
+				break;
+ 1da:	b0 c0       	rjmp	.+352    	; 0x33c <A_1_5_5+0x266>
+ 1dc:	af c0       	rjmp	.+350    	; 0x33c <A_1_5_5+0x266>
+			case 1:
+				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))			// Beide Tasten nicht gedrückt aus State Up-Taste gedrückt
+ 1de:	86 e3       	ldi	r24, 0x36	; 54
+ 1e0:	90 e0       	ldi	r25, 0x00	; 0
  1e2:	fc 01       	movw	r30, r24
- 1e4:	20 83       	st	Z, r18
-					
-					A_1_5_Wait_x_ms(wait);
- 1e6:	8b 81       	ldd	r24, Y+3	; 0x03
- 1e8:	9c 81       	ldd	r25, Y+4	; 0x04
- 1ea:	3d df       	rcall	.-390    	; 0x66 <A_1_5_Wait_x_ms>
+ 1e4:	80 81       	ld	r24, Z
+ 1e6:	88 23       	and	r24, r24
+ 1e8:	64 f0       	brlt	.+24     	; 0x202 <A_1_5_5+0x12c>
+ 1ea:	86 e3       	ldi	r24, 0x36	; 54
+ 1ec:	90 e0       	ldi	r25, 0x00	; 0
+ 1ee:	fc 01       	movw	r30, r24
+ 1f0:	80 81       	ld	r24, Z
+ 1f2:	88 2f       	mov	r24, r24
+ 1f4:	90 e0       	ldi	r25, 0x00	; 0
+ 1f6:	80 74       	andi	r24, 0x40	; 64
+ 1f8:	99 27       	eor	r25, r25
+ 1fa:	89 2b       	or	r24, r25
+ 1fc:	11 f4       	brne	.+4      	; 0x202 <A_1_5_5+0x12c>
+				{
+					State = 0;											// State 0 setzen, da State 0 = Beide Tasten nicht gedrückt
+ 1fe:	1a 82       	std	Y+2, r1	; 0x02
+ 200:	28 c0       	rjmp	.+80     	; 0x252 <A_1_5_5+0x17c>
+				}
+				else if (PINB & (1 << 6) && PINB & (1 << 7))			// Beide Tasten gedrückt aus State Up-Taste gedrückt
+ 202:	86 e3       	ldi	r24, 0x36	; 54
+ 204:	90 e0       	ldi	r25, 0x00	; 0
+ 206:	fc 01       	movw	r30, r24
+ 208:	80 81       	ld	r24, Z
+ 20a:	88 2f       	mov	r24, r24
+ 20c:	90 e0       	ldi	r25, 0x00	; 0
+ 20e:	80 74       	andi	r24, 0x40	; 64
+ 210:	99 27       	eor	r25, r25
+ 212:	89 2b       	or	r24, r25
+ 214:	49 f0       	breq	.+18     	; 0x228 <A_1_5_5+0x152>
+ 216:	86 e3       	ldi	r24, 0x36	; 54
+ 218:	90 e0       	ldi	r25, 0x00	; 0
+ 21a:	fc 01       	movw	r30, r24
+ 21c:	80 81       	ld	r24, Z
+ 21e:	88 23       	and	r24, r24
+ 220:	1c f4       	brge	.+6      	; 0x228 <A_1_5_5+0x152>
+				{
+					State = 3;											// State 3 setzen, da State 3 = Beide Tasten gedrückt
+ 222:	83 e0       	ldi	r24, 0x03	; 3
+ 224:	8a 83       	std	Y+2, r24	; 0x02
+ 226:	15 c0       	rjmp	.+42     	; 0x252 <A_1_5_5+0x17c>
+				}
+				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))			// Taste-Down gedrückt aus State Up-Taste gedrückt
+ 228:	86 e3       	ldi	r24, 0x36	; 54
+ 22a:	90 e0       	ldi	r25, 0x00	; 0
+ 22c:	fc 01       	movw	r30, r24
+ 22e:	80 81       	ld	r24, Z
+ 230:	88 2f       	mov	r24, r24
+ 232:	90 e0       	ldi	r25, 0x00	; 0
+ 234:	80 74       	andi	r24, 0x40	; 64
+ 236:	99 27       	eor	r25, r25
+ 238:	89 2b       	or	r24, r25
+ 23a:	09 f4       	brne	.+2      	; 0x23e <A_1_5_5+0x168>
+ 23c:	81 c0       	rjmp	.+258    	; 0x340 <A_1_5_5+0x26a>
+ 23e:	86 e3       	ldi	r24, 0x36	; 54
+ 240:	90 e0       	ldi	r25, 0x00	; 0
+ 242:	fc 01       	movw	r30, r24
+ 244:	80 81       	ld	r24, Z
+ 246:	88 23       	and	r24, r24
+ 248:	0c f4       	brge	.+2      	; 0x24c <A_1_5_5+0x176>
+ 24a:	7a c0       	rjmp	.+244    	; 0x340 <A_1_5_5+0x26a>
+				{
+					State = 2;											// State 2 setzen, da State 2 = Down-Taste gedrückt
+ 24c:	82 e0       	ldi	r24, 0x02	; 2
+ 24e:	8a 83       	std	Y+2, r24	; 0x02
 				}
 				break;
- 1ec:	cb c0       	rjmp	.+406    	; 0x384 <A_1_5_5+0x2ae>
- 1ee:	ca c0       	rjmp	.+404    	; 0x384 <A_1_5_5+0x2ae>
-		  case 1:
-				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))
- 1f0:	86 e3       	ldi	r24, 0x36	; 54
- 1f2:	90 e0       	ldi	r25, 0x00	; 0
- 1f4:	fc 01       	movw	r30, r24
- 1f6:	80 81       	ld	r24, Z
- 1f8:	88 23       	and	r24, r24
- 1fa:	7c f0       	brlt	.+30     	; 0x21a <A_1_5_5+0x144>
- 1fc:	86 e3       	ldi	r24, 0x36	; 54
- 1fe:	90 e0       	ldi	r25, 0x00	; 0
- 200:	fc 01       	movw	r30, r24
- 202:	80 81       	ld	r24, Z
- 204:	88 2f       	mov	r24, r24
- 206:	90 e0       	ldi	r25, 0x00	; 0
- 208:	80 74       	andi	r24, 0x40	; 64
- 20a:	99 27       	eor	r25, r25
- 20c:	89 2b       	or	r24, r25
- 20e:	29 f4       	brne	.+10     	; 0x21a <A_1_5_5+0x144>
+ 250:	77 c0       	rjmp	.+238    	; 0x340 <A_1_5_5+0x26a>
+ 252:	76 c0       	rjmp	.+236    	; 0x340 <A_1_5_5+0x26a>
+			case 2:
+				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))			// Beide Tasten nicht gedrückt aus State Down-Taste gedrückt
+ 254:	86 e3       	ldi	r24, 0x36	; 54
+ 256:	90 e0       	ldi	r25, 0x00	; 0
+ 258:	fc 01       	movw	r30, r24
+ 25a:	80 81       	ld	r24, Z
+ 25c:	88 23       	and	r24, r24
+ 25e:	64 f0       	brlt	.+24     	; 0x278 <A_1_5_5+0x1a2>
+ 260:	86 e3       	ldi	r24, 0x36	; 54
+ 262:	90 e0       	ldi	r25, 0x00	; 0
+ 264:	fc 01       	movw	r30, r24
+ 266:	80 81       	ld	r24, Z
+ 268:	88 2f       	mov	r24, r24
+ 26a:	90 e0       	ldi	r25, 0x00	; 0
+ 26c:	80 74       	andi	r24, 0x40	; 64
+ 26e:	99 27       	eor	r25, r25
+ 270:	89 2b       	or	r24, r25
+ 272:	11 f4       	brne	.+4      	; 0x278 <A_1_5_5+0x1a2>
 				{
-					State = 0;
-
-					A_1_5_Wait_x_ms(wait);
- 210:	1a 82       	std	Y+2, r1	; 0x02
- 212:	8b 81       	ldd	r24, Y+3	; 0x03
- 214:	9c 81       	ldd	r25, Y+4	; 0x04
- 216:	27 df       	rcall	.-434    	; 0x66 <A_1_5_Wait_x_ms>
- 218:	2e c0       	rjmp	.+92     	; 0x276 <A_1_5_5+0x1a0>
+					State = 0;											// State 0 setzen, da State 0 = Beide Tasten nicht gedrückt
+ 274:	1a 82       	std	Y+2, r1	; 0x02
+ 276:	28 c0       	rjmp	.+80     	; 0x2c8 <A_1_5_5+0x1f2>
 				}
-				else if (PINB & (1 << 6) && PINB & (1 << 7))
- 21a:	86 e3       	ldi	r24, 0x36	; 54
- 21c:	90 e0       	ldi	r25, 0x00	; 0
- 21e:	fc 01       	movw	r30, r24
- 220:	80 81       	ld	r24, Z
- 222:	88 2f       	mov	r24, r24
- 224:	90 e0       	ldi	r25, 0x00	; 0
- 226:	80 74       	andi	r24, 0x40	; 64
- 228:	99 27       	eor	r25, r25
- 22a:	89 2b       	or	r24, r25
- 22c:	61 f0       	breq	.+24     	; 0x246 <A_1_5_5+0x170>
- 22e:	86 e3       	ldi	r24, 0x36	; 54
- 230:	90 e0       	ldi	r25, 0x00	; 0
- 232:	fc 01       	movw	r30, r24
- 234:	80 81       	ld	r24, Z
- 236:	88 23       	and	r24, r24
- 238:	34 f4       	brge	.+12     	; 0x246 <A_1_5_5+0x170>
-				{
-					State = 3;
- 23a:	83 e0       	ldi	r24, 0x03	; 3
-
-					A_1_5_Wait_x_ms(wait);
- 23c:	8a 83       	std	Y+2, r24	; 0x02
- 23e:	8b 81       	ldd	r24, Y+3	; 0x03
- 240:	9c 81       	ldd	r25, Y+4	; 0x04
- 242:	11 df       	rcall	.-478    	; 0x66 <A_1_5_Wait_x_ms>
- 244:	18 c0       	rjmp	.+48     	; 0x276 <A_1_5_5+0x1a0>
-				}
-				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))
- 246:	86 e3       	ldi	r24, 0x36	; 54
- 248:	90 e0       	ldi	r25, 0x00	; 0
- 24a:	fc 01       	movw	r30, r24
- 24c:	80 81       	ld	r24, Z
- 24e:	88 2f       	mov	r24, r24
- 250:	90 e0       	ldi	r25, 0x00	; 0
- 252:	80 74       	andi	r24, 0x40	; 64
- 254:	99 27       	eor	r25, r25
- 256:	89 2b       	or	r24, r25
- 258:	09 f4       	brne	.+2      	; 0x25c <A_1_5_5+0x186>
- 25a:	96 c0       	rjmp	.+300    	; 0x388 <A_1_5_5+0x2b2>
- 25c:	86 e3       	ldi	r24, 0x36	; 54
- 25e:	90 e0       	ldi	r25, 0x00	; 0
- 260:	fc 01       	movw	r30, r24
- 262:	80 81       	ld	r24, Z
- 264:	88 23       	and	r24, r24
- 266:	0c f4       	brge	.+2      	; 0x26a <A_1_5_5+0x194>
-				{
-					State = 2;
- 268:	8f c0       	rjmp	.+286    	; 0x388 <A_1_5_5+0x2b2>
- 26a:	82 e0       	ldi	r24, 0x02	; 2
-
-					A_1_5_Wait_x_ms(wait);
- 26c:	8a 83       	std	Y+2, r24	; 0x02
- 26e:	8b 81       	ldd	r24, Y+3	; 0x03
- 270:	9c 81       	ldd	r25, Y+4	; 0x04
- 272:	f9 de       	rcall	.-526    	; 0x66 <A_1_5_Wait_x_ms>
-				}
-				break;
- 274:	89 c0       	rjmp	.+274    	; 0x388 <A_1_5_5+0x2b2>
- 276:	88 c0       	rjmp	.+272    	; 0x388 <A_1_5_5+0x2b2>
-		case 2:
-				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))
+				else if (PINB & (1 << 6) && PINB & (1 << 7))			// Beide Tasten gedrückt aus State Down-Taste gedrückt
  278:	86 e3       	ldi	r24, 0x36	; 54
  27a:	90 e0       	ldi	r25, 0x00	; 0
  27c:	fc 01       	movw	r30, r24
  27e:	80 81       	ld	r24, Z
- 280:	88 23       	and	r24, r24
- 282:	7c f0       	brlt	.+30     	; 0x2a2 <A_1_5_5+0x1cc>
- 284:	86 e3       	ldi	r24, 0x36	; 54
- 286:	90 e0       	ldi	r25, 0x00	; 0
- 288:	fc 01       	movw	r30, r24
- 28a:	80 81       	ld	r24, Z
- 28c:	88 2f       	mov	r24, r24
+ 280:	88 2f       	mov	r24, r24
+ 282:	90 e0       	ldi	r25, 0x00	; 0
+ 284:	80 74       	andi	r24, 0x40	; 64
+ 286:	99 27       	eor	r25, r25
+ 288:	89 2b       	or	r24, r25
+ 28a:	49 f0       	breq	.+18     	; 0x29e <A_1_5_5+0x1c8>
+ 28c:	86 e3       	ldi	r24, 0x36	; 54
  28e:	90 e0       	ldi	r25, 0x00	; 0
- 290:	80 74       	andi	r24, 0x40	; 64
- 292:	99 27       	eor	r25, r25
- 294:	89 2b       	or	r24, r25
+ 290:	fc 01       	movw	r30, r24
+ 292:	80 81       	ld	r24, Z
+ 294:	88 23       	and	r24, r24
+ 296:	1c f4       	brge	.+6      	; 0x29e <A_1_5_5+0x1c8>
 				{
-					State = 0;
- 296:	29 f4       	brne	.+10     	; 0x2a2 <A_1_5_5+0x1cc>
-
-					A_1_5_Wait_x_ms(wait);
- 298:	1a 82       	std	Y+2, r1	; 0x02
- 29a:	8b 81       	ldd	r24, Y+3	; 0x03
- 29c:	9c 81       	ldd	r25, Y+4	; 0x04
- 29e:	e3 de       	rcall	.-570    	; 0x66 <A_1_5_Wait_x_ms>
- 2a0:	2e c0       	rjmp	.+92     	; 0x2fe <A_1_5_5+0x228>
+					State = 3;											// State 3 setzen, da State 3 = Beide Tasten gedrückt
+ 298:	83 e0       	ldi	r24, 0x03	; 3
+ 29a:	8a 83       	std	Y+2, r24	; 0x02
+ 29c:	15 c0       	rjmp	.+42     	; 0x2c8 <A_1_5_5+0x1f2>
 				}
-				else if (PINB & (1 << 6) && PINB & (1 << 7))
- 2a2:	86 e3       	ldi	r24, 0x36	; 54
- 2a4:	90 e0       	ldi	r25, 0x00	; 0
- 2a6:	fc 01       	movw	r30, r24
- 2a8:	80 81       	ld	r24, Z
- 2aa:	88 2f       	mov	r24, r24
- 2ac:	90 e0       	ldi	r25, 0x00	; 0
- 2ae:	80 74       	andi	r24, 0x40	; 64
- 2b0:	99 27       	eor	r25, r25
- 2b2:	89 2b       	or	r24, r25
- 2b4:	61 f0       	breq	.+24     	; 0x2ce <A_1_5_5+0x1f8>
- 2b6:	86 e3       	ldi	r24, 0x36	; 54
- 2b8:	90 e0       	ldi	r25, 0x00	; 0
- 2ba:	fc 01       	movw	r30, r24
- 2bc:	80 81       	ld	r24, Z
- 2be:	88 23       	and	r24, r24
+				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))			// Taste-Up gedrückt aus State Down-Taste gedrückt
+ 29e:	86 e3       	ldi	r24, 0x36	; 54
+ 2a0:	90 e0       	ldi	r25, 0x00	; 0
+ 2a2:	fc 01       	movw	r30, r24
+ 2a4:	80 81       	ld	r24, Z
+ 2a6:	88 23       	and	r24, r24
+ 2a8:	0c f0       	brlt	.+2      	; 0x2ac <A_1_5_5+0x1d6>
+ 2aa:	4c c0       	rjmp	.+152    	; 0x344 <A_1_5_5+0x26e>
+ 2ac:	86 e3       	ldi	r24, 0x36	; 54
+ 2ae:	90 e0       	ldi	r25, 0x00	; 0
+ 2b0:	fc 01       	movw	r30, r24
+ 2b2:	80 81       	ld	r24, Z
+ 2b4:	88 2f       	mov	r24, r24
+ 2b6:	90 e0       	ldi	r25, 0x00	; 0
+ 2b8:	80 74       	andi	r24, 0x40	; 64
+ 2ba:	99 27       	eor	r25, r25
+ 2bc:	89 2b       	or	r24, r25
+ 2be:	09 f0       	breq	.+2      	; 0x2c2 <A_1_5_5+0x1ec>
+ 2c0:	41 c0       	rjmp	.+130    	; 0x344 <A_1_5_5+0x26e>
 				{
-					State = 3;
- 2c0:	34 f4       	brge	.+12     	; 0x2ce <A_1_5_5+0x1f8>
- 2c2:	83 e0       	ldi	r24, 0x03	; 3
-
-					A_1_5_Wait_x_ms(wait);
+					State = 1;											// State 1 setzen, da State 1 = Up-Taste gedrückt
+ 2c2:	81 e0       	ldi	r24, 0x01	; 1
  2c4:	8a 83       	std	Y+2, r24	; 0x02
- 2c6:	8b 81       	ldd	r24, Y+3	; 0x03
- 2c8:	9c 81       	ldd	r25, Y+4	; 0x04
- 2ca:	cd de       	rcall	.-614    	; 0x66 <A_1_5_Wait_x_ms>
- 2cc:	18 c0       	rjmp	.+48     	; 0x2fe <A_1_5_5+0x228>
-				}
-				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))
- 2ce:	86 e3       	ldi	r24, 0x36	; 54
- 2d0:	90 e0       	ldi	r25, 0x00	; 0
- 2d2:	fc 01       	movw	r30, r24
- 2d4:	80 81       	ld	r24, Z
- 2d6:	88 23       	and	r24, r24
- 2d8:	0c f0       	brlt	.+2      	; 0x2dc <A_1_5_5+0x206>
- 2da:	58 c0       	rjmp	.+176    	; 0x38c <A_1_5_5+0x2b6>
- 2dc:	86 e3       	ldi	r24, 0x36	; 54
- 2de:	90 e0       	ldi	r25, 0x00	; 0
- 2e0:	fc 01       	movw	r30, r24
- 2e2:	80 81       	ld	r24, Z
- 2e4:	88 2f       	mov	r24, r24
- 2e6:	90 e0       	ldi	r25, 0x00	; 0
- 2e8:	80 74       	andi	r24, 0x40	; 64
- 2ea:	99 27       	eor	r25, r25
- 2ec:	89 2b       	or	r24, r25
- 2ee:	09 f0       	breq	.+2      	; 0x2f2 <A_1_5_5+0x21c>
-				{
-					State = 1;
- 2f0:	4d c0       	rjmp	.+154    	; 0x38c <A_1_5_5+0x2b6>
- 2f2:	81 e0       	ldi	r24, 0x01	; 1
-
-					A_1_5_Wait_x_ms(wait);
- 2f4:	8a 83       	std	Y+2, r24	; 0x02
- 2f6:	8b 81       	ldd	r24, Y+3	; 0x03
- 2f8:	9c 81       	ldd	r25, Y+4	; 0x04
- 2fa:	b5 de       	rcall	.-662    	; 0x66 <A_1_5_Wait_x_ms>
 				}
 				break;
- 2fc:	47 c0       	rjmp	.+142    	; 0x38c <A_1_5_5+0x2b6>
- 2fe:	46 c0       	rjmp	.+140    	; 0x38c <A_1_5_5+0x2b6>
-		case 3:
-				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))
- 300:	86 e3       	ldi	r24, 0x36	; 54
- 302:	90 e0       	ldi	r25, 0x00	; 0
- 304:	fc 01       	movw	r30, r24
- 306:	80 81       	ld	r24, Z
- 308:	88 23       	and	r24, r24
- 30a:	7c f0       	brlt	.+30     	; 0x32a <A_1_5_5+0x254>
- 30c:	86 e3       	ldi	r24, 0x36	; 54
- 30e:	90 e0       	ldi	r25, 0x00	; 0
- 310:	fc 01       	movw	r30, r24
- 312:	80 81       	ld	r24, Z
- 314:	88 2f       	mov	r24, r24
+ 2c6:	3e c0       	rjmp	.+124    	; 0x344 <A_1_5_5+0x26e>
+ 2c8:	3d c0       	rjmp	.+122    	; 0x344 <A_1_5_5+0x26e>
+			case 3:
+				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))			// Beide Tasten nicht gedrückt aus State beide Tasten gedrückt
+ 2ca:	86 e3       	ldi	r24, 0x36	; 54
+ 2cc:	90 e0       	ldi	r25, 0x00	; 0
+ 2ce:	fc 01       	movw	r30, r24
+ 2d0:	80 81       	ld	r24, Z
+ 2d2:	88 23       	and	r24, r24
+ 2d4:	64 f0       	brlt	.+24     	; 0x2ee <A_1_5_5+0x218>
+ 2d6:	86 e3       	ldi	r24, 0x36	; 54
+ 2d8:	90 e0       	ldi	r25, 0x00	; 0
+ 2da:	fc 01       	movw	r30, r24
+ 2dc:	80 81       	ld	r24, Z
+ 2de:	88 2f       	mov	r24, r24
+ 2e0:	90 e0       	ldi	r25, 0x00	; 0
+ 2e2:	80 74       	andi	r24, 0x40	; 64
+ 2e4:	99 27       	eor	r25, r25
+ 2e6:	89 2b       	or	r24, r25
+ 2e8:	11 f4       	brne	.+4      	; 0x2ee <A_1_5_5+0x218>
+				{
+					State = 0;											// State 0 setzen, da State 0 = Beide Tasten nicht gedrückt
+ 2ea:	1a 82       	std	Y+2, r1	; 0x02
+ 2ec:	26 c0       	rjmp	.+76     	; 0x33a <A_1_5_5+0x264>
+				}
+				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))			// Taste-Down gedrückt aus State beide Tasten gedrückt
+ 2ee:	86 e3       	ldi	r24, 0x36	; 54
+ 2f0:	90 e0       	ldi	r25, 0x00	; 0
+ 2f2:	fc 01       	movw	r30, r24
+ 2f4:	80 81       	ld	r24, Z
+ 2f6:	88 2f       	mov	r24, r24
+ 2f8:	90 e0       	ldi	r25, 0x00	; 0
+ 2fa:	80 74       	andi	r24, 0x40	; 64
+ 2fc:	99 27       	eor	r25, r25
+ 2fe:	89 2b       	or	r24, r25
+ 300:	49 f0       	breq	.+18     	; 0x314 <A_1_5_5+0x23e>
+ 302:	86 e3       	ldi	r24, 0x36	; 54
+ 304:	90 e0       	ldi	r25, 0x00	; 0
+ 306:	fc 01       	movw	r30, r24
+ 308:	80 81       	ld	r24, Z
+ 30a:	88 23       	and	r24, r24
+ 30c:	1c f0       	brlt	.+6      	; 0x314 <A_1_5_5+0x23e>
+				{
+					State = 2;											// State 2 setzen, da State 2 = Down-Taste gedrückt
+ 30e:	82 e0       	ldi	r24, 0x02	; 2
+ 310:	8a 83       	std	Y+2, r24	; 0x02
+ 312:	13 c0       	rjmp	.+38     	; 0x33a <A_1_5_5+0x264>
+				}
+				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))			// Taste-Up gedrückt aus State beide Tasten gedrückt
+ 314:	86 e3       	ldi	r24, 0x36	; 54
  316:	90 e0       	ldi	r25, 0x00	; 0
- 318:	80 74       	andi	r24, 0x40	; 64
- 31a:	99 27       	eor	r25, r25
- 31c:	89 2b       	or	r24, r25
+ 318:	fc 01       	movw	r30, r24
+ 31a:	80 81       	ld	r24, Z
+ 31c:	88 23       	and	r24, r24
+ 31e:	a4 f4       	brge	.+40     	; 0x348 <A_1_5_5+0x272>
+ 320:	86 e3       	ldi	r24, 0x36	; 54
+ 322:	90 e0       	ldi	r25, 0x00	; 0
+ 324:	fc 01       	movw	r30, r24
+ 326:	80 81       	ld	r24, Z
+ 328:	88 2f       	mov	r24, r24
+ 32a:	90 e0       	ldi	r25, 0x00	; 0
+ 32c:	80 74       	andi	r24, 0x40	; 64
+ 32e:	99 27       	eor	r25, r25
+ 330:	89 2b       	or	r24, r25
+ 332:	51 f4       	brne	.+20     	; 0x348 <A_1_5_5+0x272>
 				{
-					State = 0;
- 31e:	29 f4       	brne	.+10     	; 0x32a <A_1_5_5+0x254>
-
-					A_1_5_Wait_x_ms(wait);
- 320:	1a 82       	std	Y+2, r1	; 0x02
- 322:	8b 81       	ldd	r24, Y+3	; 0x03
- 324:	9c 81       	ldd	r25, Y+4	; 0x04
- 326:	9f de       	rcall	.-706    	; 0x66 <A_1_5_Wait_x_ms>
- 328:	2c c0       	rjmp	.+88     	; 0x382 <A_1_5_5+0x2ac>
-				}
-				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))
- 32a:	86 e3       	ldi	r24, 0x36	; 54
- 32c:	90 e0       	ldi	r25, 0x00	; 0
- 32e:	fc 01       	movw	r30, r24
- 330:	80 81       	ld	r24, Z
- 332:	88 2f       	mov	r24, r24
- 334:	90 e0       	ldi	r25, 0x00	; 0
- 336:	80 74       	andi	r24, 0x40	; 64
- 338:	99 27       	eor	r25, r25
- 33a:	89 2b       	or	r24, r25
- 33c:	61 f0       	breq	.+24     	; 0x356 <A_1_5_5+0x280>
- 33e:	86 e3       	ldi	r24, 0x36	; 54
- 340:	90 e0       	ldi	r25, 0x00	; 0
- 342:	fc 01       	movw	r30, r24
- 344:	80 81       	ld	r24, Z
- 346:	88 23       	and	r24, r24
-				{
-					State = 2;
- 348:	34 f0       	brlt	.+12     	; 0x356 <A_1_5_5+0x280>
- 34a:	82 e0       	ldi	r24, 0x02	; 2
-
-					A_1_5_Wait_x_ms(wait);
- 34c:	8a 83       	std	Y+2, r24	; 0x02
- 34e:	8b 81       	ldd	r24, Y+3	; 0x03
- 350:	9c 81       	ldd	r25, Y+4	; 0x04
- 352:	89 de       	rcall	.-750    	; 0x66 <A_1_5_Wait_x_ms>
- 354:	16 c0       	rjmp	.+44     	; 0x382 <A_1_5_5+0x2ac>
-				}
-				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))
- 356:	86 e3       	ldi	r24, 0x36	; 54
- 358:	90 e0       	ldi	r25, 0x00	; 0
- 35a:	fc 01       	movw	r30, r24
- 35c:	80 81       	ld	r24, Z
- 35e:	88 23       	and	r24, r24
- 360:	bc f4       	brge	.+46     	; 0x390 <A_1_5_5+0x2ba>
- 362:	86 e3       	ldi	r24, 0x36	; 54
- 364:	90 e0       	ldi	r25, 0x00	; 0
- 366:	fc 01       	movw	r30, r24
- 368:	80 81       	ld	r24, Z
- 36a:	88 2f       	mov	r24, r24
- 36c:	90 e0       	ldi	r25, 0x00	; 0
- 36e:	80 74       	andi	r24, 0x40	; 64
- 370:	99 27       	eor	r25, r25
- 372:	89 2b       	or	r24, r25
-				{
-					State = 1;
- 374:	69 f4       	brne	.+26     	; 0x390 <A_1_5_5+0x2ba>
- 376:	81 e0       	ldi	r24, 0x01	; 1
-
-					A_1_5_Wait_x_ms(wait);
- 378:	8a 83       	std	Y+2, r24	; 0x02
- 37a:	8b 81       	ldd	r24, Y+3	; 0x03
- 37c:	9c 81       	ldd	r25, Y+4	; 0x04
- 37e:	73 de       	rcall	.-794    	; 0x66 <A_1_5_Wait_x_ms>
+					State = 1;											// State 1 setzen, da State 1 = Up-Taste gedrückt
+ 334:	81 e0       	ldi	r24, 0x01	; 1
+ 336:	8a 83       	std	Y+2, r24	; 0x02
 				}
 				break;
- 380:	07 c0       	rjmp	.+14     	; 0x390 <A_1_5_5+0x2ba>
- 382:	06 c0       	rjmp	.+12     	; 0x390 <A_1_5_5+0x2ba>
+ 338:	07 c0       	rjmp	.+14     	; 0x348 <A_1_5_5+0x272>
+ 33a:	06 c0       	rjmp	.+12     	; 0x348 <A_1_5_5+0x272>
 
-					PORTC = ~Cnt;
-					
-					A_1_5_Wait_x_ms(wait);
+					State = 1;											// State 1 setzen, da State 1 = Up-Taste gedrückt
+
+					PORTC = ~Cnt;										// LED´s updaten
 				}
 				break;
- 384:	00 00       	nop
- 386:	c2 ce       	rjmp	.-636    	; 0x10c <A_1_5_5+0x36>
+ 33c:	00 00       	nop
+ 33e:	05 c0       	rjmp	.+10     	; 0x34a <A_1_5_5+0x274>
+				}
+				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))			// Taste-Down gedrückt aus State Up-Taste gedrückt
 				{
-					State = 2;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 2;											// State 2 setzen, da State 2 = Down-Taste gedrückt
 				}
 				break;
- 388:	00 00       	nop
- 38a:	c0 ce       	rjmp	.-640    	; 0x10c <A_1_5_5+0x36>
+ 340:	00 00       	nop
+ 342:	03 c0       	rjmp	.+6      	; 0x34a <A_1_5_5+0x274>
+				}
+				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))			// Taste-Up gedrückt aus State Down-Taste gedrückt
 				{
-					State = 1;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 1;											// State 1 setzen, da State 1 = Up-Taste gedrückt
 				}
 				break;
- 38c:	00 00       	nop
- 38e:	be ce       	rjmp	.-644    	; 0x10c <A_1_5_5+0x36>
+ 344:	00 00       	nop
+ 346:	01 c0       	rjmp	.+2      	; 0x34a <A_1_5_5+0x274>
+				}
+				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))			// Taste-Up gedrückt aus State beide Tasten gedrückt
 				{
-					State = 1;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 1;											// State 1 setzen, da State 1 = Up-Taste gedrückt
 				}
 				break;
- 390:	00 00       	nop
-		  
-		  // Default: Wenn ((State != 0) && (State != 1)) => Fehler: Fall darf bei korrektem Programm nicht auftreten.
-		  default:
-				break;
-	  }
-  }
- 392:	bc ce       	rjmp	.-648    	; 0x10c <A_1_5_5+0x36>
+ 348:	00 00       	nop
+			default:
+				break;													// Default: Wenn State == 1|2|3|4 => Fehler: Fall darf bei korrektem Programm nicht auftreten.
+		}
+		
+		A_1_5_Wait_x_ms(wait);											// Wartezeit einfügen um Prellen zu vermeiden
+ 34a:	8b 81       	ldd	r24, Y+3	; 0x03
+ 34c:	9c 81       	ldd	r25, Y+4	; 0x04
+ 34e:	8b de       	rcall	.-746    	; 0x66 <A_1_5_Wait_x_ms>
+	}
+ 350:	dd ce       	rjmp	.-582    	; 0x10c <A_1_5_5+0x36>
 
-00000394 <main>:
+00000352 <main>:
 #include "MPT_LAB_MAIN.h"
 #include "Labor_1/MPT_Lab_1.h"
 
 
 int main(void)
 {
- 394:	cf 93       	push	r28
- 396:	df 93       	push	r29
- 398:	cd b7       	in	r28, 0x3d	; 61
- 39a:	de b7       	in	r29, 0x3e	; 62
+ 352:	cf 93       	push	r28
+ 354:	df 93       	push	r29
+ 356:	cd b7       	in	r28, 0x3d	; 61
+ 358:	de b7       	in	r29, 0x3e	; 62
   //------------------------------------------------------------------------------
   //A_1_5_1();
   //A_1_5_2();
   //A_1_5_3();
   //A_1_5_4();
   A_1_5_5();
- 39c:	9c de       	rcall	.-712    	; 0xd6 <A_1_5_5>
+ 35a:	bd de       	rcall	.-646    	; 0xd6 <A_1_5_5>
 
 
   while(1)
   {
       // Wir machen nichts (mehr)...
   }
- 39e:	ff cf       	rjmp	.-2      	; 0x39e <main+0xa>
+ 35c:	ff cf       	rjmp	.-2      	; 0x35c <main+0xa>
 
-000003a0 <_exit>:
- 3a0:	f8 94       	cli
+0000035e <_exit>:
+ 35e:	f8 94       	cli
 
-000003a2 <__stop_program>:
- 3a2:	ff cf       	rjmp	.-2      	; 0x3a2 <__stop_program>
+00000360 <__stop_program>:
+ 360:	ff cf       	rjmp	.-2      	; 0x360 <__stop_program>

@@ -51,16 +51,16 @@
 //------------------------------------------------------------------------------
 void A_1_5_Wait_x_ms(uint16_t x_ms)
 {
-  // IHR_CODE_HIER ... => A_1_2
-  const uint16_t loopTime1 = 726;
-  
-  uint16_t i_w1;
-  
-  for(uint16_t i = 0; i < x_ms; i++){
-	  for (i_w1 = 0; i_w1 < loopTime1; i_w1++)
-	  {
-	  }
-  }
+	// IHR_CODE_HIER ... => A_1_2
+	const uint16_t loopTime1 = 726;											// Anzahl der Schleifendurchläufe
+	
+	uint16_t i_w1;															// Zähler für Schleifendurchläufe
+	
+	for(uint16_t i = 0; i < x_ms; i++){										// Schleife zum Zählen der Millisekunden
+		for (i_w1 = 0; i_w1 < loopTime1; i_w1++)							// Schleife zur Kalibrierung der Millisekunden für 16MHz optimiert
+		{
+		}
+	}
 }
 
 
@@ -340,123 +340,95 @@ void A_1_5_4(void)
 //          das mehrere Tasten gleichzeitig gedrückt werden.
 void A_1_5_5(void)
 {
-  // IHR_CODE_HIER ...
-  const int wait = 1;
-  
-  // 8-Bit-Variable für den Zähler
-  uint8_t Cnt = 0;
-  // Zustandsvariable: 0 = Nichts gedrückt, 1 = Taste-Up, 2 = Taste-Down, 3 = Taste-Up-and-Down 
-  uint8_t State = 0;
-  
-  // Richtungsbits
-  DDRC = 0b11111111;
-  DDRB = 0b00000000;
+	// IHR_CODE_HIER ...
+	const int wait = 50;												// Konstante für Wartezeit 50ms, um Prellen zu vermeiden
+	
+	uint8_t Cnt = 0;													// 8-Bit-Variable für den Zähler
+	uint8_t State = 0;													// Zustandsvariable: 0 = Nichts gedrückt, 1 = Taste-Up, 2 = Taste-Down, 3 = Taste-Up-and-Down
+	
+	DDRC = 0b11111111;													// Richtungsbits setezen PC = Ausgang
+	DDRB = 0b00000000;													// Richtungsbits setezen PB = Eingang
 
-  //LED´s auf 0 setzen
-  PORTC = ~Cnt;
-  
-  while (1)
-  {
-	  switch (State)
-	  {
-		  case 0:
-				if (PINB & (1 << 6) && PINB & (1 << 7)) // Beide Tasten gedrückt aus State nichts
+	PORTC = ~Cnt;														//LED´s auf 0 setzen
+	
+	while (1)
+	{
+		switch (State)
+		{
+			case 0:
+				if (PINB & (1 << 6) && PINB & (1 << 7))					// Beide Tasten gedrückt aus State nichts Gedrückt
 				{
-					State = 3;
-			  
-					A_1_5_Wait_x_ms(wait);
+					State = 3;											// State 3 setzen, da State 3 = Beide Tasten gedrückt
 				}
-				else if (PINB & (1 << 6) && !(PINB & (1 << 7))) // Taste-Down gedrückt aus State nichts
+				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))			// Taste-Down gedrückt aus State nichts Gedrückt
 				{
-					if(Cnt > 0){
-						Cnt--;
+					if(Cnt > 0){										// Untere Grenze des Zählers festlegen = 0
+						Cnt--;											// Zähler dekrementieren
 					}
 
-					State = 2;
+					State = 2;											// State 2 setzen, da State 2 = Down-Taste gedrückt
 
-					PORTC = ~Cnt;
-					
-					A_1_5_Wait_x_ms(wait);
-				}
-				else if (PINB & (1 << 7) && !(PINB & (1 << 6))) // Taste-Up gedrückt aus State nichts
-				{
-					if(Cnt < 255){
-						Cnt++;
+					PORTC = ~Cnt;										// LED´s updaten
+				}	
+				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))			// Taste-Up gedrückt aus State nichts Gedrückt
+				{	
+					if(Cnt < 255){										// Obere Grenze des Zählers festlegen = 255
+						Cnt++;											// Zähler inkrementieren
 					}
 
-					State = 1;
+					State = 1;											// State 1 setzen, da State 1 = Up-Taste gedrückt
 
-					PORTC = ~Cnt;
-					
-					A_1_5_Wait_x_ms(wait);
+					PORTC = ~Cnt;										// LED´s updaten
 				}
 				break;
-		  case 1:
-				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))
+			case 1:
+				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))			// Beide Tasten nicht gedrückt aus State Up-Taste gedrückt
 				{
-					State = 0;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 0;											// State 0 setzen, da State 0 = Beide Tasten nicht gedrückt
 				}
-				else if (PINB & (1 << 6) && PINB & (1 << 7))
+				else if (PINB & (1 << 6) && PINB & (1 << 7))			// Beide Tasten gedrückt aus State Up-Taste gedrückt
 				{
-					State = 3;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 3;											// State 3 setzen, da State 3 = Beide Tasten gedrückt
 				}
-				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))
+				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))			// Taste-Down gedrückt aus State Up-Taste gedrückt
 				{
-					State = 2;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 2;											// State 2 setzen, da State 2 = Down-Taste gedrückt
 				}
 				break;
-		case 2:
-				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))
+			case 2:
+				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))			// Beide Tasten nicht gedrückt aus State Down-Taste gedrückt
 				{
-					State = 0;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 0;											// State 0 setzen, da State 0 = Beide Tasten nicht gedrückt
 				}
-				else if (PINB & (1 << 6) && PINB & (1 << 7))
+				else if (PINB & (1 << 6) && PINB & (1 << 7))			// Beide Tasten gedrückt aus State Down-Taste gedrückt
 				{
-					State = 3;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 3;											// State 3 setzen, da State 3 = Beide Tasten gedrückt
 				}
-				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))
+				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))			// Taste-Up gedrückt aus State Down-Taste gedrückt
 				{
-					State = 1;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 1;											// State 1 setzen, da State 1 = Up-Taste gedrückt
 				}
 				break;
-		case 3:
-				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))
+			case 3:
+				if (!(PINB & (1 << 7)) && !(PINB & (1 << 6)))			// Beide Tasten nicht gedrückt aus State beide Tasten gedrückt
 				{
-					State = 0;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 0;											// State 0 setzen, da State 0 = Beide Tasten nicht gedrückt
 				}
-				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))
+				else if (PINB & (1 << 6) && !(PINB & (1 << 7)))			// Taste-Down gedrückt aus State beide Tasten gedrückt
 				{
-					State = 2;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 2;											// State 2 setzen, da State 2 = Down-Taste gedrückt
 				}
-				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))
+				else if (PINB & (1 << 7) && !(PINB & (1 << 6)))			// Taste-Up gedrückt aus State beide Tasten gedrückt
 				{
-					State = 1;
-
-					A_1_5_Wait_x_ms(wait);
+					State = 1;											// State 1 setzen, da State 1 = Up-Taste gedrückt
 				}
 				break;
-		  
-		  // Default: Wenn ((State != 0) && (State != 1)) => Fehler: Fall darf bei korrektem Programm nicht auftreten.
-		  default:
-				break;
-	  }
-  }
+			default:
+				break;													// Default: Wenn State == 1|2|3|4 => Fehler: Fall darf bei korrektem Programm nicht auftreten.
+		}
+		
+		A_1_5_Wait_x_ms(wait);											// Wartezeit einfügen um Prellen zu vermeiden
+	}
 }	
 
 //##############################################################################

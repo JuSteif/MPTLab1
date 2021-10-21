@@ -377,7 +377,7 @@ END GROUP
 .rela.plt
  *(.rela.plt)
 
-.text           0x00000000      0x3a4
+.text           0x00000000      0x362
  *(.vectors)
  .vectors       0x00000000       0x54 C:/Program Files (x86)/Atmel/Studio/7.0/Packs/atmel/ATmega_DFP/1.0.98/gcc/dev/atmega32/avr5/crtatmega32.o
                 0x00000000                __vector_default
@@ -458,15 +458,15 @@ END GROUP
  .text.A_1_5_Wait_x_ms
                 0x00000066       0x70 Labor_1/MPT_LAB_1_5.o
                 0x00000066                A_1_5_Wait_x_ms
- .text.A_1_5_5  0x000000d6      0x2be Labor_1/MPT_LAB_1_5.o
+ .text.A_1_5_5  0x000000d6      0x27c Labor_1/MPT_LAB_1_5.o
                 0x000000d6                A_1_5_5
- .text.main     0x00000394        0xc MPT_LAB_MAIN.o
-                0x00000394                main
-                0x000003a0                . = ALIGN (0x2)
+ .text.main     0x00000352        0xc MPT_LAB_MAIN.o
+                0x00000352                main
+                0x0000035e                . = ALIGN (0x2)
  *(.fini9)
- .fini9         0x000003a0        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
-                0x000003a0                _exit
-                0x000003a0                exit
+ .fini9         0x0000035e        0x0 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+                0x0000035e                _exit
+                0x0000035e                exit
  *(.fini9)
  *(.fini8)
  *(.fini8)
@@ -485,11 +485,11 @@ END GROUP
  *(.fini1)
  *(.fini1)
  *(.fini0)
- .fini0         0x000003a0        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
+ .fini0         0x0000035e        0x4 c:/program files (x86)/atmel/studio/7.0/toolchain/avr8/avr8-gnu-toolchain/bin/../lib/gcc/avr/5.4.0/avr5\libgcc.a(_exit.o)
  *(.fini0)
-                0x000003a4                _etext = .
+                0x00000362                _etext = .
 
-.data           0x00800060        0x0 load address 0x000003a4
+.data           0x00800060        0x0 load address 0x00000362
                 [!provide]                PROVIDE (__data_start, .)
  *(.data)
  *(.data*)
@@ -507,8 +507,8 @@ END GROUP
  *(.bss*)
  *(COMMON)
                 [!provide]                PROVIDE (__bss_end, .)
-                0x000003a4                __data_load_start = LOADADDR (.data)
-                0x000003a4                __data_load_end = (__data_load_start + SIZEOF (.data))
+                0x00000362                __data_load_start = LOADADDR (.data)
+                0x00000362                __data_load_end = (__data_load_start + SIZEOF (.data))
 
 .noinit         0x00800060        0x0
                 [!provide]                PROVIDE (__noinit_start, .)
@@ -600,10 +600,10 @@ END GROUP
  .debug_abbrev  0x00000000       0xcb Labor_1/MPT_LAB_1_5.o
  .debug_abbrev  0x000000cb       0x49 MPT_LAB_MAIN.o
 
-.debug_line     0x00000000      0x8f8
+.debug_line     0x00000000      0x88e
  *(.debug_line .debug_line.* .debug_line_end)
- .debug_line    0x00000000      0x682 Labor_1/MPT_LAB_1_5.o
- .debug_line    0x00000682      0x276 MPT_LAB_MAIN.o
+ .debug_line    0x00000000      0x618 Labor_1/MPT_LAB_1_5.o
+ .debug_line    0x00000618      0x276 MPT_LAB_MAIN.o
 
 .debug_frame    0x00000000      0x108
  *(.debug_frame)
